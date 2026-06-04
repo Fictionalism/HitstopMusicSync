@@ -6,8 +6,8 @@ using System.Diagnostics;
 using System.Linq;
 
 [BepInPlugin(
-    "com.stereotypicaldweeb.hitstopmusicsync",
-    "Hitstop Music Sync",
+    "com.fiction.hitstopmusicsync",
+    "Hitstop Music Sync (Winamp v5.666)",
     "1.0.0"
 )]
 public class hitstopmusicsync : BaseUnityPlugin
@@ -16,23 +16,23 @@ public class hitstopmusicsync : BaseUnityPlugin
 
     private void Awake()
     {
-        harmony = new Harmony("com.stereotypicaldweeb.hitstopmusicsync");
+        harmony = new Harmony("com.fiction.hitstopmusicsync");
         harmony.PatchAll();
     }
 }
 
 
-public static class SpotifyMuter
+public static class WinampMuter
 {
     private static float previousVolume = -1f;
     private static bool isMuted = false;
 
     public static void Toggle()
     {
-        var spotifyProcess = Process.GetProcessesByName("Spotify").FirstOrDefault();
+        var winampProcess = Process.GetProcessesByName("Winamp").FirstOrDefault();
         if (spotifyProcess == null) { 
             var logSource = Logger.CreateLogSource("HitstopMusicSync");
-            logSource.LogError("Spotify not found! Is it open?");
+            logSource.LogError("Winamp not found! Is it open?");
             return;
         }
 
@@ -43,7 +43,7 @@ public static class SpotifyMuter
         for (int i = 0; i < sessions.Count; i++)
         {
             var session = sessions[i];
-            if (session.GetProcessID == spotifyProcess.Id)
+            if (session.GetProcessID == winampProcess.Id)
             {
                 if (!isMuted)
                 {
@@ -75,7 +75,7 @@ public static class HitstopStartPatch
 
         if (!MusicState.PausedByMod)
         {
-            SpotifyMuter.Toggle();
+            WinampMuter.Toggle();
             MusicState.PausedByMod = true;
         }
     }
@@ -90,7 +90,7 @@ public static class HitstopEndPatch
     {
         if (MusicState.PausedByMod)
         {
-            SpotifyMuter.Toggle();
+            WinampMuter.Toggle();
             MusicState.PausedByMod = false;
         }
     }
