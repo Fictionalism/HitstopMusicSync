@@ -30,7 +30,7 @@ public static class WinampMuter
     public static void Toggle()
     {
         var winampProcess = Process.GetProcessesByName("Winamp").FirstOrDefault();
-        if (spotifyProcess == null) { 
+        if (winampProcess == null) { 
             var logSource = Logger.CreateLogSource("HitstopMusicSync");
             logSource.LogError("Winamp not found! Is it open?");
             return;
